@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  div(class="jumbotron")
+    div(class="container")
+      h1= title
+      p In this example, we'll create an account and connect with Recheck to obtain a valid Recheck ID
+      a(class='btn btn-primary btn-lg' href='/login/oauth/recheck') Login with Recheck
