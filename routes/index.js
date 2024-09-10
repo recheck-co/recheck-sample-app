@@ -5,14 +5,22 @@ router.get('/', function (req, res, next) {
   if (req.user) {
     return res.redirect('/home');
   }
-  res.render('index', { title: 'Recheck Sample App' });
+  res.render('index', {
+    title: process.env['SAMPLE_APP_NAME']
+  });
 });
 
 router.get('/home', function (req, res, next) {
   if (!req.user) {
     return res.redirect('/');
   }
-  res.render('home', { 'user': req.user, title: `Welcome ${req.user.name || "unknown"}` });
+
+  res.render('home', {
+    title: process.env['SAMPLE_APP_NAME'],
+    user: req.user,
+    name: `${req.user.name}`,
+    recheck_id: `${req.user.recheck_id}`
+  });
 });
 
 router.post('/logout', function (req, res, next) {

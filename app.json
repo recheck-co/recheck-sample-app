@@ -1,0 +1,38 @@
+{
+    "name": "recheck-oauth-sample-app",
+    "description": "Sample application showing how to use a Recheck OAuth Application",
+    "repository": "https://github.com/recheck-co/recheck-sample-app",
+    "image": "heroku/nodejs",
+    "buildpacks": [
+      {
+        "url": "heroku/nodejs"
+      }
+    ],
+    "env": {
+      "RECHECK_CLIENT_ID": {
+        "description": "Client ID of Recheck OAuth Application",
+        "required": true
+      },
+      "RECHECK_CLIENT_SECRET": {
+        "description": "Client Secret of Recheck OAuth Application",
+        "required": true
+      },
+      "RECHECK_HOSTNAME": {
+        "description": "Recheck instance to target",
+        "required": true,
+        "value": "https://recheck.co"
+      },
+      "SAMPLE_APP_HOSTNAME": {
+        "description": "Hostname of this sample app (e.g. https://sample-app-123.herokuapp.com)",
+        "required": true
+      },
+      "SAMPLE_APP_NAME": {
+        "description": "Name of the platform",
+        "value": "Example Sales Platform",
+        "required": true
+      }
+    },
+    "scripts": {
+      "postdeploy": "npm run start"
+    }
+  }

@@ -1,8 +1,34 @@
 extends layout
 
 block content
-  div(class="jumbotron")
-    div(class="container")
-      h1= title
-      p In this example, we'll create an account and connect with Recheck to obtain a valid Recheck ID
-      a(class='btn btn-primary btn-lg' href='/login/oauth/recheck') Login with Recheck
+  body
+    .container
+      h1 #{title}
+      h2 New Sales Rep Onboarding
+      
+      .progress_section
+        span Personal Info
+        | >
+        span Company Info
+        | >
+        span.font-weight-bold Verification
+        
+      .info-group
+        .label Name
+        .value Jane Doe
+      .info-group
+        .label Address
+        .value
+          | 123 Example St,
+          br
+          | Example CA 12345
+      .info-group
+        .label Email
+        .value jane.doe@example.solar
+      .info-group
+        .label Phone
+        .value (123) 456-7890
+      div.text-center.mt-4.mb-2 You're almost done! Please take a minute to verify your identity.
+      div.text-center
+        a(href='/login/oauth/recheck')
+          img(src="/images/verify-with-recheck-light.png" alt="Verify with Recheck" height=45)

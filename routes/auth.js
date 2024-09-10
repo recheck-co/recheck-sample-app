@@ -3,7 +3,7 @@ var passport = require('passport');
 var constants = require('../utils/constants');
 
 var router = express.Router();
-var RecheckStrategy = require('../recheck-strategy')
+var RecheckStrategy = require('../recheck-strategy');
 
 var strategyCallback = async (accessToken, refreshToken, profile, cb) => {
   // This is where you'd do whatever you want after receiving a valid authentication
@@ -50,46 +50,51 @@ var strategyCallback = async (accessToken, refreshToken, profile, cb) => {
   }
 };
 
-// Callback URL should be modified to be whatever URL is appropriate to your app
-var stratgyOptions = { callbackURL: `http://localhost:3000/login/oauth/recheck/callback` }
+var stratgyOptions = {
+  callbackURL: `${process.env['SAMPLE_APP_HOSTNAME']}/login/oauth/recheck/callback`
+}
 passport.use(new RecheckStrategy(stratgyOptions, strategyCallback));
 
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
-    cb(null, { id: user.id, username: user.username, name: user.name });
+    cb(null, { id: user.id, username: user.username, name: user.name, recheck_id: user.recheck_id });
   });
 });
 
-passport.deserializeUser(function(user, cb) {
-  process.nextTick(function() {
+passport.deserializeUser(function (user, cb) {
+  process.nextTick(function () {
     return cb(null, user);
   });
 });
 
-router.get('/login', function (req, res, next) {
-  if (req.user) {
-    return res.redirect('/home');
-  }
-  res.render('login', { title: 'Recheck Sample App - Login' });
-});
+const passportOauthRedirectErrors = () => {
+  return (req, res, next) => {
+    const interceptedNext = (err) => {
+      // Redirect back to login if we encounter any errors during auth
+      if (err) {
+        console.error(`Error during authentication: ${err}`);
+        req.flash('error', 'We encountered an error during authentication. Maybe try again?');
+        return res.redirect('/');
+      }
+      next();
+    }
 
-router.get('/login/oauth/recheck', async (req, res, next) => passport.authenticate('oauth2')(req, res, next));
+    try {
+      passport.authenticate('oauth2', { failureRedirect: '/' })(req, res, interceptedNext);
+    } catch (err) {
+      next(err);
+    }
+  }
+};
+
+router.get('/login/oauth/recheck', passportOauthRedirectErrors());
 
 router.get('/login/oauth/recheck/callback',
-  async (req, res, next) => passport.authenticate('oauth2', { failureRedirect: '/login' })(req, res, next),
-  async function (req, res) {
+  passportOauthRedirectErrors(),
+
+  function (req, res) {
     // Successful authentication, redirect home.
     res.redirect('/');
   });
-
-// The same handlers as above in non-async form (a bit simpler since passport is callback-based)
-// router.get('/login/oauth/recheck', passport.authenticate('oauth2'));
-
-// router.get('/login/oauth/recheck/callback',
-//   passport.authenticate('oauth2', { failureRedirect: '/login' }),
-//   function (req, res) {
-//     // Successful authentication, redirect home.
-//     res.redirect('/');
-//   });
 
 module.exports = router;

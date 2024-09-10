@@ -1,9 +1,33 @@
 extends layout
 
 block content
-  div(class="jumbotron")
-    div(class="container")
-      h1= title
-      p You are now logged in!
-      form(action='/logout' method='post')
-        button(class='rounded py-1 px-2 btn btn-secondary' type='submit' value='Logout') Logout
+  body
+    .container
+      h1 #{title}
+      h2 New Sales Rep Onboarding
+
+      .progress_section
+        span Personal Info
+        | >
+        span Company Info
+        | >
+        span.font-weight-bold Verification
+
+      div.alert.alert-success.text-center(role="alert")
+        | Recheck account connected.
+
+      .info-group
+        .label.mb-3 Recheck Verified Information
+        .info-group.mx-3
+          .label Legal Name
+          .value=name
+        .info-group.mx-3
+          .label Recheck ID 
+          .value ##{recheck_id}
+
+      div.d-flex.justify-content-between.mt-4
+        div
+          form(action='/logout' method='post')
+            button.btn.btn-outline-secondary.py-1.px-2(type='submit' value='Logout') Back
+        div
+          button.btn.btn-primary Continue

@@ -1,5 +1,6 @@
 var OAuth2Strategy = require('passport-oauth2');
 var constants = require('./utils/constants');
+var TokenError = require('passport-oauth2/lib/errors/tokenerror')
 
 class RecheckStrategy extends OAuth2Strategy {
     constructor(options, verify) {
@@ -63,6 +64,20 @@ class RecheckStrategy extends OAuth2Strategy {
             accessToken,
             (err, profile) => this.parseUserInfo(err, profile, done)
         );
+    };
+
+    parseErrorResponse(body, status) {
+        var json = JSON.parse(body);
+        if (json.error) {
+            if (status == 401 && json.error == 'invalid_client') {
+                return new TokenError(
+                    "Not authorized. Check to make sure your client ID and client secret are correct.",
+                    json.error,
+                    null,
+                    status)
+            }
+        }
+        return super.parseErrorResponse(body, status);
     };
 }
 
