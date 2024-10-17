@@ -60,7 +60,7 @@ class RecheckStrategy extends OAuth2Strategy {
     userProfile(accessToken, done) {
         // Strategy subclasses are allowed to use the protected `_oauth2` variable
         return this._oauth2.getProtectedResource(
-            `${process.env['RECHECK_HOSTNAME']}/api/userinfo/`,
+            `${process.env['RECHECK_HOSTNAME']}/oauth/userinfo/`,
             accessToken,
             (err, profile) => this.parseUserInfo(err, profile, done)
         );

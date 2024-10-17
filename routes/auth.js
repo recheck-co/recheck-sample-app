@@ -21,7 +21,7 @@ var strategyCallback = async (accessToken, refreshToken, profile, cb) => {
 
     if (!row) {
       const userResult = await db.run('INSERT INTO users (name, recheck_id) VALUES (?, ?)', [
-        profile.full_name,
+        profile.name_legal,
         profile.sub
       ]);
 
@@ -33,7 +33,7 @@ var strategyCallback = async (accessToken, refreshToken, profile, cb) => {
       ]);
       var user = {
         id: id,
-        name: profile.full_name,
+        name: profile.name_legal,
         recheck_id: profile.sub,
       };
       return cb(null, user);
