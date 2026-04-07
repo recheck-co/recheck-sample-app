@@ -4,6 +4,10 @@ block content
   body
     .container
       h1 #{title}
+      each display_error in flash ? flash.errors : []
+        div(class='alert alert-danger')= display_error
+      each display_info in flash ? flash.infos : []
+        div(class='alert alert-info')= display_info
       h2 New Sales Rep Onboarding
 
       .progress_section
@@ -22,12 +26,16 @@ block content
           .label Legal Name
           .value=name
         .info-group.mx-3
-          .label Recheck ID 
+          .label Recheck ID
           .value ##{recheck_id}
+        .info-group.mx-3
+          .label Recheck Token
+          .value=recheck_token
 
-      div.d-flex.justify-content-between.mt-4
+      div.d-flex.justify-content-between.align-items-center.mt-4
         div
           form(action='/logout' method='post')
             button.btn.btn-outline-secondary.py-1.px-2(type='submit' value='Logout') Back
         div
-          button.btn.btn-primary Continue
+          form(action='/reverify' method='post')
+            button.btn.verify-button.py-1.px-3(type='submit') Verify Identity

@@ -25,7 +25,8 @@ var db = (async () => {
     salt BLOB, \
     name TEXT, \
     email TEXT UNIQUE, \
-    recheck_id INTEGER UNIQUE, \
+    recheck_id TEXT UNIQUE, \
+    recheck_token TEXT, \
     email_verified INTEGER \
   )");
 

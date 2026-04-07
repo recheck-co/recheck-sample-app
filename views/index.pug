@@ -4,6 +4,10 @@ block content
   body
     .container
       h1 #{title}
+      each display_error in flash ? flash.errors : []
+        div(class='alert alert-danger')= display_error
+      each display_info in flash ? flash.infos : []
+        div(class='alert alert-info')= display_info
       h2 New Sales Rep Onboarding
       
       .progress_section

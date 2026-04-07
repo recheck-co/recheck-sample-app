@@ -40,7 +40,7 @@ fi
 
 # install Node.js
 echo -e "\n=> Installing Node.js"
-nvm use 20 || nvm install 20
+nvm use 24 || nvm install 24
 
 
 echo -e "\n=> Installing npm packages"
