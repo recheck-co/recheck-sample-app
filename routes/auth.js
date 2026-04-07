@@ -13,15 +13,17 @@ var strategyCallback = async (accessToken, refreshToken, profile, cb) => {
   // Wrap everything in a try/catch since passport won't await this function, given its callback-y nature
   try {
     var db = await require('../db');
+    const recheckId = profile.sub.split(':')[0];
     const row = await db.get(
       'SELECT * FROM federated_credentials WHERE provider = ? AND subject = ?', [
       constants.RECHECK_PROVIDER_NAME,
-      profile.sub
+      recheckId
     ]);
 
     if (!row) {
-      const userResult = await db.run('INSERT INTO users (name, recheck_id) VALUES (?, ?)', [
+      const userResult = await db.run('INSERT INTO users (name, recheck_id, recheck_token) VALUES (?, ?, ?)', [
         profile.name_legal,
+        recheckId,
         profile.sub
       ]);
 
@@ -29,15 +31,22 @@ var strategyCallback = async (accessToken, refreshToken, profile, cb) => {
       const credentialsResult = await db.run('INSERT INTO federated_credentials (user_id, provider, subject) VALUES (?, ?, ?)', [
         id,
         constants.RECHECK_PROVIDER_NAME,
-        profile.sub
+        recheckId
       ]);
       var user = {
         id: id,
         name: profile.name_legal,
-        recheck_id: profile.sub,
+        recheck_id: recheckId,
+        recheck_token: profile.sub,
       };
       return cb(null, user);
     } else {
+      // Update recheck_token on each login
+      await db.run('UPDATE users SET recheck_token = ? WHERE id = ?', [
+        profile.sub,
+        row.user_id
+      ]);
+
       const userRecord = await db.get('SELECT * FROM users WHERE id = ?', [row.user_id]);
       if (!userRecord) {
         return cb(null, false);
@@ -57,7 +66,7 @@ passport.use(new RecheckStrategy(stratgyOptions, strategyCallback));
 
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
-    cb(null, { id: user.id, username: user.username, name: user.name, recheck_id: user.recheck_id });
+    cb(null, { id: user.id, username: user.username, name: user.name, recheck_id: user.recheck_id, recheck_token: user.recheck_token });
   });
 });
 

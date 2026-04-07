@@ -15,11 +15,12 @@ router.get('/home', function (req, res, next) {
     return res.redirect('/');
   }
 
+  var recheckId = `${req.user.recheck_id}`;
   res.render('home', {
     title: process.env['SAMPLE_APP_NAME'],
     user: req.user,
     name: `${req.user.name}`,
-    recheck_id: `${req.user.recheck_id}`
+    recheck_id: recheckId
   });
 });
 

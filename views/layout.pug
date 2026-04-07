@@ -71,22 +71,16 @@ html
       .verify-button {
         background-color: #5e35b1;
         color: white;
-        padding: 0.7rem;
         border: none;
         border-radius: 4px;
         font-size: 0.9rem;
         cursor: pointer;
         transition: background-color 0.2s;
-        width: 100%;
-        margin-top: 1rem;
       }
       .verify-button:hover {
         background-color: #4527a0;
+        color: white;
       }
 
   body
-    each display_error in flash ? flash.errors : []
-      div(class='alert alert-danger')= display_error 
-    each display_info in flash ? flash.infos : []
-      div(class='alert alert-info')= display_info 
     block content

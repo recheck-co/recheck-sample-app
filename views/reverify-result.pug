@@ -1,0 +1,46 @@
+extends layout
+
+block content
+  body
+    .container
+      h1 #{title}
+      h2 New Sales Rep Onboarding
+
+      .progress_section
+        span Personal Info
+        | >
+        span Company Info
+        | >
+        span.font-weight-bold Verification
+
+      if status === 'pass'
+        div.alert.alert-success.text-center(role="alert")
+          | Identity verified successfully.
+      else if status === 'fail'
+        div.alert.alert-danger.text-center(role="alert")
+          | Identity verification failed. The selfie could not be matched.
+      else if status === 'pending'
+        div.alert.alert-warning.text-center(role="alert")
+          | Identity verification is still pending. Please complete your verification.
+      else
+        div.alert.alert-warning.text-center(role="alert")
+          | An unexpected verification status was returned. Please try again.
+
+      .info-group
+        .label.mb-3 Recheck Verified Information
+        .info-group.mx-3
+          .label Legal Name
+          .value=name
+        .info-group.mx-3
+          .label Recheck ID
+          .value ##{recheck_id}
+
+      div.d-flex.justify-content-between.mt-4
+        div
+          a.btn.btn-outline-secondary.py-1.px-2(href='/home') Back
+        if status === 'pass'
+          div
+            button.btn.btn-primary(disabled) Continue
+        else if status === 'pending' && resumeUrl
+          div
+            a.btn.verify-button.py-1.px-3(href=resumeUrl) Verify Identity
