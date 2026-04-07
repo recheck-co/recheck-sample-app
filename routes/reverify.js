@@ -108,6 +108,7 @@ router.get('/reverify/callback', async function (req, res, next) {
       status: result.status,
       name: req.user.name,
       recheck_id: req.user.recheck_id,
+      recheck_token: req.user.recheck_token,
     };
 
     if (result.status === 'pending') {
