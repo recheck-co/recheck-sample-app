@@ -20,7 +20,8 @@ router.get('/home', function (req, res, next) {
     title: process.env['SAMPLE_APP_NAME'],
     user: req.user,
     name: `${req.user.name}`,
-    recheck_id: recheckId
+    recheck_id: recheckId,
+    recheck_token: req.user.recheck_token
   });
 });
 
